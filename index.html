@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Stream Test</title>
+    </head>
+    <body style="padding:0; margin:0">
+        <img id="img" src="image.jpg" alt="" style="width: 1080px;height:720px">
+    </body>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        var socket = io();
+        window.onload = function() {
+        /*var image = document.getElementById("img");
+
+        function updateImage() {
+            image.src = image.src.split("?")[0] + "?" + new Date().getTime();
+        }
+
+        setInterval(updateImage, 80);*/
+
+        socket.on('image', image => {
+            const img = document.getElementById("img");
+            img.src = `data:image/jpg;base64,${image}`; 
+        });
+
+
+
+        window.onkeyup = function(e){
+            if(e.key.length==1&&e.key.toUpperCase() != e.key.toLowerCase())
+                socket.emit("keyup", "Key"+e.key.toUpperCase());
+            if(e.key.startsWith("Arrow"))
+                socket.emit("keyup", e.key);
+        } ;
+        window.onkeydown = function(e){
+            if(e.key.length==1&&e.key.toUpperCase() != e.key.toLowerCase())
+                socket.emit("keydown", "Key"+e.key.toUpperCase());
+            if(e.key.startsWith("Arrow"))
+                socket.emit("keydown", e.key);
+        } ;
+
+
+        function sendMousePos(event) {
+            socket.emit("click", {x: event.clientX/2, y: event.clientY/2});
+}
+
+document.addEventListener("click", sendMousePos);
+}
+
+
+    </script>
+</html>
